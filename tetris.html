@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <style>
+	h1 {
+		position: absolute;
+		display: inline;
+		margin: 0;
+		bottom: 25%;
+		left: 25%;
+		font-size: 40pt;
+		font-family: "Lucida Console", monospace;
+		text-align: center;
+	}
+
+	body {
+		margin-top: 2px;
+		margin-left: 25%;
+		margin-right: 25%;
+		overflow: hidden;
+		font-family: "Lucida Console", monospace;
+	}
+
+	canvas {
+		position: inherit;
+	}
+
+	#holder {
+		width: 300px;
+		height: 600px;
+		top: 2px;
+		margin-left: 200px;
+		position: absolute;
+	}
+
+	.pauseOverlay {
+		width: 300px;
+		height: 600px;
+		background-color: #2A2A2AAA;
+		display: none;
+		z-index: 2;
+		position: inherit;
+	}
+
+	.heldPiece {
+		margin: 0;
+		background-color: #1A1016;
+		position: absolute;
+		top: 50px;
+		left: 25%;
+	}
+
+	.preview {
+		margin: 0;
+		background-color: #1A1016;
+		position: absolute;
+		top: 75px;
+		left: 61%;
+	}
+
+	/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  margin-left: 40px;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  left: 40px;
+  top: 210px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+border-radius: 34px;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.helptext {
+	margin-top: 30%;
+	width: 30%;
+	font-size: 70%;
+}
+
+h2 {
+	font-size: 15px;
+	display: inline;
+	margin-left: -120px;
+}
+  </style>
+  <body>
+	<canvas class = "heldPiece" id="heldPiece" width="150" height="150"></canvas>
+	<canvas class = "preview" id="preview" width="150" height="450"></canvas>
+	<label class="switch">
+		<h2>Toggle ghost</h2>
+		<input id="prevToggle" onclick="showPreview = !showPreview;" type="checkbox">
+		<span class="slider"></span>
+	</label>
+	<div id="holder">
+		<div id="pausePopup" class="pauseOverlay"></div>
+		<canvas id="canvas" width="300" height="800"></canvas>
+	</div>
+	<h1 id="score">0</h1>
+	
+	<div class="helptext">
+		<h3><b><i>Controls:</i></b></h3>
+		<p><b>LEFT/RIGHT ARROW</b> to move.<br><b>DOWN ARROW</b> to soft drop.<br><b>SPACE</b> to hard drop.<br><b>UP ARROW</b> to rotate.<br><b>SHIFT</b> to swap held piece.<br><b>ESC</b> to toggle pause.</p>
+	</div>
+  </body>
+  <script src="tetris_script.js"></script>
+</html>
+
