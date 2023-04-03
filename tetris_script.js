@@ -12,7 +12,6 @@ const prevctx = piecePreview.getContext("2d");
 const cellSize = 30;
 const gap = 5;
 const corner = 6;
-const softDrop = 1.5;
 
 const kickReference = {
 	"i": {
@@ -321,7 +320,7 @@ class tetromino {
 				this.blocks[i].y += 1;
 			}
 			this.y += 1;
-			if (dropSpeed == softDrop) {
+			if (dropSpeed != gravity) {
 				softDropCount++;
 			}
 		}
@@ -593,7 +592,7 @@ function testInit() {
 	document.addEventListener("keydown", function(event) {
 		lastKey = event.key;
 		if (event.key == "ArrowDown") {
-			dropSpeed = softDrop;
+			dropSpeed = 0.25 * gravity;
 			event.preventDefault();
 		} else if (event.key == "ArrowUp") {
 			activePiece.rotate();
