@@ -5,16 +5,36 @@
     <title></title>
   </head>
   <style>
-	h1 {
+	.infobox {
 		position: absolute;
-		display: inline;
 		margin: 0;
-		bottom: 25%;
-		left: 25%;
-		font-size: 40pt;
-		font-family: "Lucida Console", monospace;
+		bottom: 150px;
+		left: 22%;
+		width: 12%;
+		height: 280px;
 		text-align: center;
+		vertical-align: middle;
+		border-radius: 20px;
+		background-color: #1A1016;
+		color: #FAFAFAAA;
+		padding: 10px;
 	}
+
+	h1 {
+		font-size: 25px;
+		line-height: 0px;
+		padding: 0px 0 18px 0;
+	}
+
+
+	h4 {
+		font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+		padding: 4px 0 0 0;
+		font-size: 12px;
+		color: white;
+		letter-spacing: 2px;
+	}
+
 
 	body {
 		margin-top: 2px;
@@ -43,6 +63,7 @@
 		display: none;
 		z-index: 2;
 		position: inherit;
+		border-radius: 20px;
 	}
 
 	.heldPiece {
@@ -107,11 +128,11 @@ border-radius: 34px;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #74c99e;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #74c99e;
 }
 
 input:checked + .slider:before {
@@ -124,6 +145,7 @@ input:checked + .slider:before {
 	margin-top: 30%;
 	width: 30%;
 	font-size: 70%;
+	margin-left: 100%;
 }
 
 h2 {
@@ -131,6 +153,35 @@ h2 {
 	display: inline;
 	margin-left: -120px;
 }
+
+#circle {
+	--percent: 0%;
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-left: 50px;
+  border-radius: 50%;
+  background: #ccc;
+  background-image: conic-gradient(#1e8875, var(--percent, 100), #ccc 0);
+}
+
+#circle .inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: #000;
+  border-radius: 50%;
+  font-size: 1.85em;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.75);
+}
+
   </style>
   <body>
 	<canvas class = "heldPiece" id="heldPiece" width="150" height="150"></canvas>
@@ -144,8 +195,19 @@ h2 {
 		<div id="pausePopup" class="pauseOverlay"></div>
 		<canvas id="canvas" width="300" height="800"></canvas>
 	</div>
-	<h1 id="score">0</h1>
-	
+	<div class="infobox">
+		<h4>SCORE</h4>
+		<h1 id="score">0</h1>
+		<h4>LEVEL</h4>
+		<div id="circle">
+			<div class="inner">
+				<h5 id="level">0</h5>
+			</div>
+		</div>
+		<h4>LINES CLEARED</h4>
+		<h1 id="lines">0</h1>
+	</div>
+
 	<div class="helptext">
 		<h3><b><i>Controls:</i></b></h3>
 		<p><b>LEFT/RIGHT ARROW</b> to move.<br><b>DOWN ARROW</b> to soft drop.<br><b>SPACE</b> to hard drop.<br><b>UP ARROW</b> to rotate.<br><b>SHIFT</b> to swap held piece.<br><b>ESC</b> to toggle pause.</p>
@@ -153,4 +215,3 @@ h2 {
   </body>
   <script src="tetris_script.js"></script>
 </html>
-

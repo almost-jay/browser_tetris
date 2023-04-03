@@ -213,8 +213,12 @@ var isPaused = false;
 var tweens = [];
 var gradients = [];
 var tSpin = 0;
+var level = 0;
+var lines = 0;
+var totalLines = 0;
+var oldTotalLines = 0;
 var difficultCombo = 0;
-var gravity = 30;
+var gravity = 48;
 var softDropCount = 0;
 
 var showPreview = false;
@@ -467,7 +471,7 @@ class tetromino {
 
 	placePiece() {
 		if (this.flashCounter == 0) {
-			//if (lastKey == "ArrowUp") {
+			if (lastKey == "ArrowUp") {
 				if (this.type == "t") {
 					let corners = tCornerReference[this.rotation];
 					let cornerPass = 0;
@@ -507,7 +511,7 @@ class tetromino {
 						}
 					}
 				}
-			//}
+			}
 			this.state = 2;
 			for (let i = 0; i < this.blocks.length; i++) {
 				board[this.blocks[i].y][this.blocks[i].x] = this.type;
@@ -550,8 +554,10 @@ function initBlocks(type) {
 function reset() {
 	ctx.fillStyle = "#1A1016";
 	ctx.font = "8px sans-serif";
-	var lastKey = "";
-
+	
+	level = 0;
+	lines = 0;
+	totalLines = 0;
 	lastKey = "";
 	score = 0;
 	document.getElementById("score").innerHTML = 0;
@@ -559,7 +565,7 @@ function reset() {
 	direction = 0;
 	softDropCount = 0;
 	difficultCombo = 0;
-	gravity = 30;
+	gravity = 48;
 	dropSpeed = gravity;
 	screenShake = {
 		"duration": 0,
@@ -573,7 +579,7 @@ function reset() {
 	canSwap = true;
 	tSpin = 0;
 	difficultCombo = 0;
-
+	checkLevel();
 	clearBoard();
 	pieceBag = ["i","o","t","j","l","z","s","i","o","t","j","l","z","s"];
 	bagIndex = 0;
@@ -649,7 +655,9 @@ function swapHeldPiece() {
 function renderHeldPiece() {
 	if (heldPiece) {
 		heldctx.fillStyle = "#1A1016FF";
-		heldctx.fillRect(0,0,150,150);
+		heldctx.beginPath();
+		heldctx.roundRect(0,0,150,150,20);
+		heldctx.fill();
 
 		if (canSwap) {
 			heldctx.fillStyle = blockReference[heldPiece]["colour"];
@@ -671,7 +679,9 @@ function renderHeldPiece() {
 
 function renderPiecePreview() {
 	prevctx.fillStyle = "#1A1016FF";
-	prevctx.fillRect(0,0,150,525);
+	prevctx.beginPath();
+	prevctx.roundRect(0,0,150,450,20);
+	prevctx.fill();
 	for (let i = 0; i < 4; i++) {
 		let previewIndex = bagIndex + i;
 		if (previewIndex >= pieceBag.length) {
@@ -704,7 +714,6 @@ function checkForFill() {
 			}
 		}
 
-		let oldScore = score;
 		if (isFilled) {
 			filledRows.push(i);
 			fillCount += 1;
@@ -754,7 +763,10 @@ function checkForFill() {
 				screenShake.duration += 8;
 				screenShake.strength += 2;
 			}
-			gravity -= (score - oldScore) * 0.02;
+
+			lines += fillCount;
+			totalLines += fillCount;
+			checkLevel();
 		}
 	}
 	for (let i = 0; i < fillCount; i++) {
@@ -763,6 +775,30 @@ function checkForFill() {
 		animateClear(board.splice(filledRows[i],1),filledRows[i]);
 		board.unshift([0,0,0,0,0,0,0,0,0,0]);
 	}
+}
+
+function checkLevel() {
+	let requiredLines = 100;
+	if (level < 10) {
+		requiredLines = (level + 1) * 10;
+	}
+
+	if (level > 14) {
+		requiredLines = (level - 5) * 10;
+	}
+
+	if (level > 25) {
+		requiredLines = 200;
+	}
+
+	if (lines >= requiredLines) {
+		level++;
+		lines = 0;
+		document.getElementById("level").innerHTML = level;
+	}
+
+	let linePercent = (lines / requiredLines) * 100;
+	document.getElementById("circle").style.setProperty("--percent",linePercent+"%");
 }
 
 function animateClear(clearedRow,yLevel) {
@@ -825,14 +861,14 @@ function resetRender() {
 	ctx.beginPath();
 	ctx.clearRect(0,0,300,800);
 	ctx.fillStyle = "#1A1016";
+	ctx.beginPath();
 	ctx.fillRect(0,0,300,600);
 
 	for (let i = 2; i < 22; i++) {
 		for (let j = 0; j < 10; j++) {
 			if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
-				ctx.fillStyle = "#2A202660";
-				ctx.beginPath();
-				ctx.fillRect(j * cellSize,(i - 2) * cellSize,cellSize,cellSize);
+				ctx.fillStyle = "#2A202680";
+				ctx.fillRect(j * cellSize,(i - 2) * cellSize,cellSize,cellSize,[0,0,20,0]);
 			}
 		}
 	}
@@ -946,8 +982,6 @@ function renderEffects() {
 	for (let i = 0; i < gradients.length; i++) {
 		if (gradients[i].counter < gradients[i].endCount) {
 			gradients[i].counter++;
-			//x0 AND x1 need to be in between the two xs
-			//y0 and y1 are different values
 			let avgX = (gradients[i]["pos"][0] + gradients[i]["pos"][2]) / 2 
 			let gradient = ctx.createLinearGradient(avgX,gradients[i]["pos"][1],avgX,gradients[i]["pos"][3]);
 			for (let j = 0; j < gradients[i].stops.length; j++) {
@@ -962,7 +996,9 @@ function renderEffects() {
 				gradient.addColorStop(j,stop);
 			}
 			ctx.fillStyle = gradient;
-			ctx.fillRect(gradients[i]["pos"][0],gradients[i]["pos"][1],gradients[i]["pos"][2] - gradients[i]["pos"][0],gradients[i]["pos"][3] - gradients[i]["pos"][1]);
+			ctx.beginPath();
+			ctx.roundRect(gradients[i]["pos"][0],gradients[i]["pos"][1],gradients[i]["pos"][2] - gradients[i]["pos"][0],gradients[i]["pos"][3] - gradients[i]["pos"][1],corner);
+			ctx.fill();
 
 			unfinished.push(gradients[i]);
 		}
@@ -978,6 +1014,14 @@ function renderEffects() {
 		softScore = score;
 		document.getElementById("score").innerHTML = softScore;
 	}
+
+	if (oldTotalLines < totalLines) {
+		document.getElementById("lines").innerHTML = Math.floor(oldTotalLines);
+		oldTotalLines += 0.25;
+	} else {
+		oldTotalLines = totalLines;
+		document.getElementById("lines").innerHTML = oldTotalLines;
+	}
 }
 
 function drawDebugText() {
@@ -992,7 +1036,7 @@ function drawDebugText() {
 
 function drawDebugSquare() {
 	ctx.fillStyle = "rgba(0,255,0,0.8)";
-	ctx.fillRect(activePiece.x * cellSize + (gap / 2),(activePiece.y - 2) * cellSize + (gap / 2),cellSize - gap, cellSize - gap, corner);
+	ctx.fillRect(activePiece.x * cellSize + (gap / 2),(activePiece.y - 2) * cellSize + (gap / 2),cellSize - gap, cellSize - gap);
 }
 
 
