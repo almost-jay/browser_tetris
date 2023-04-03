@@ -795,10 +795,27 @@ function checkLevel() {
 		level++;
 		lines = 0;
 		document.getElementById("level").innerHTML = level;
+		increaseGravity();
 	}
 
 	let linePercent = (lines / requiredLines) * 100;
 	document.getElementById("circle").style.setProperty("--percent",linePercent+"%");
+}
+
+function increaseGravity() {
+	if (level < 9) {
+		gravity = (-5 * level) + 48;
+	} else if (level < 13) {
+		gravity = 5;
+	} else if (level < 16) {
+		gravity = 4;
+	} else if (level < 19) {
+		gravity = 3;
+	} else if (level < 29) {
+		gravity = 2;
+	} else {
+		gravity = 1;
+	}
 }
 
 function animateClear(clearedRow,yLevel) {
