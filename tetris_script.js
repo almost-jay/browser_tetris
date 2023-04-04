@@ -592,7 +592,7 @@ function testInit() {
 	document.addEventListener("keydown", function(event) {
 		lastKey = event.key;
 		if (event.key == "ArrowDown") {
-			dropSpeed = 0.25 * gravity;
+			dropSpeed = 0.1 * gravity;
 			event.preventDefault();
 		} else if (event.key == "ArrowUp") {
 			activePiece.rotate();
